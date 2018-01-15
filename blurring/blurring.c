@@ -3,9 +3,6 @@
 #include "clut.h"
 #include "pgm.h"
 
-#define H                   argv[2] // height
-#define W                   argv[3] // weight
-#define S                   argv[4] // filter
 #define LOCAL_SIZE          8 // work items per work group
 
 int main(void) {
@@ -16,7 +13,8 @@ int main(void) {
     cl_event  event;
 
     // create the two input vectors + output vector
-    int i, j, h = H, w = W, s = S;
+    int i, j;
+    int h = argv[2], w = argv[3], s = argv[4]; // height, weight, filter
     int x = h - s - 1, y = w - s - 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
