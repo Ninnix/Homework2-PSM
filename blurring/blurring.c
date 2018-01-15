@@ -51,16 +51,16 @@ int main(void) {
     // create memory buffers on the device for each vector 
     cl_mem a_mem_obj = clCreateBuffer(dev.context, 
     						CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, 
-    						n*n * sizeof(int), A, NULL);
+    						h*w * sizeof(int), A, NULL);
     if (!a_mem_obj) clut_panic("failed to allocate input vec on device memory");
 
     cl_mem b_mem_obj = clCreateBuffer(dev.context, 
     						CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, 
-    						n*n * sizeof(int), B, NULL);
+    						s*s * sizeof(int), B, NULL);
     if (!b_mem_obj) clut_panic("failed to allocate input vec on device memory");
 
     cl_mem c_mem_obj = clCreateBuffer(dev.context, CL_MEM_WRITE_ONLY, 
-    						n*n * sizeof(int), NULL, NULL);
+    						x*y * sizeof(int), NULL, NULL);
     if (!c_mem_obj) clut_panic("failed to allocate output vec on device memory");
         
     // create an OpenCL kernel
@@ -93,7 +93,7 @@ int main(void) {
 
     // read the memory buffer C on the device to the local variable C
     err = clEnqueueReadBuffer(dev.queue, c_mem_obj, CL_TRUE, 0, 
-                              h*w * sizeof(int), C, 0, NULL, NULL);
+                              x*y * sizeof(int), C, 0, NULL, NULL);
     clut_check_err(err, "clEnqueueReadBuffer failed");
 
     printf("Tempo esecuzione su GPU: %f sec\n", 
