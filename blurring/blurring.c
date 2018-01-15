@@ -23,15 +23,17 @@ int main(void) {
     int *C = (int*)malloc(sizeof(int)*x*y);
     pgm_load(*A, h, w, Colosseo.pgm);
 
-    int z = s/2, c=0; // indice da cui iniziare a scrivere 1 in ogni riga
+    int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
         for (j = 0; j < s; j++) {
             if ( z <= j && j <= z+2*i ) {
                 if (i < s/2) {
                     B[i*s+j] = 1;
+                    count++;
                 } else {
                     if ( j <= z+2*(s-i-1)) {
                         B[i*s+j] = 1;
+                        count++;
                     } else B[i*s+j] = 0;
                 }
             }
