@@ -17,7 +17,7 @@ int main(void) {
 
     // create the two input vectors + output vector
     int i, j, h = H, w = W, s = S;
-    int x = n - s - 1, y = m - s - 1, count = 0;
+    int x = h - s - 1, y = w - s - 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
