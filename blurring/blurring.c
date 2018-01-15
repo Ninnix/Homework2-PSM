@@ -28,9 +28,9 @@ int main(void) {
         for (j = 0; j < s; j++) {
             if (j <= s/2) {
                 if (i == z) { 
-                    for ( j <= z + i*2, j++ ) {
+                    for (; j <= z + i*2; j++ ) {
                         B[i*s+j] = 1;
-                        count++
+                        count++;
                     }
                 } else {
                     B[i*s+j] = 0;
@@ -38,9 +38,9 @@ int main(void) {
                 z--; 
             } else {
                 if (i == z) {
-                    for ( j <= s - i*2, j++ ) {
+                    for (; j <= s - i*2; j++ ) {
                         B[i*s+j] = 1;
-                        count++
+                        count++;
                     } 
                 } else {
                     B[i*s+j] = 0;
