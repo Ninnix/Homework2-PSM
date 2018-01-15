@@ -3,9 +3,9 @@
 #include "clut.h"
 #include "pgm.h"
 
-#define H                   1000 // height
-#define W                   1000 // weight
-#define S                   10 // filter
+#define H                   argv[2] // height
+#define W                   argv[3] // weight
+#define S                   argv[4] // filter
 #define LOCAL_SIZE          8 // work items per work group
 
 int main(void) {
@@ -21,7 +21,7 @@ int main(void) {
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
-    pgm_load(*A, h, w, Colosseo.pgm);
+    pgm_load(*A, h, w, argv[1]);
 
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
@@ -80,10 +80,10 @@ int main(void) {
     // execute the OpenCL kernel on the list
     size_t local_item_size[2]  = { LOCAL_SIZE, LOCAL_SIZE };
     size_t global_item_size[2] = 
-        { ((n+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE,
-          ((n+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE } ;
+        { ((s+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE,
+          ((s+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE } ;
 
-    printf("data size: %d\n", n);
+    printf("data size: %d\n", s);
     printf("global size: %lu\n", global_item_size[0]);
     
     err = clEnqueueNDRangeKernel(dev.queue, kernel, 2, NULL, 
@@ -99,7 +99,7 @@ int main(void) {
     printf("Tempo esecuzione su GPU: %f sec\n", 
            clut_get_duration(event));
 
-    pgm_save(*C, x, y, out.pgm)
+    pgm_save(*C, x, y, out.pgm);
 
     clut_close_device(&dev);
 
