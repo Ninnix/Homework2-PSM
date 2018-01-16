@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
-    pgm_load(A, &h, &w, file);
+    pgm_load(&A, &h, &w, file);
 
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     printf("Tempo esecuzione su GPU: %f sec\n", 
            clut_get_duration(event));
 
-    pgm_save(*C, x*, y*, out.pgm);
+    pgm_save(C, x, y, file);
 
     clut_close_device(&dev);
 
