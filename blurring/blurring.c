@@ -13,14 +13,14 @@ int main(int argc, char* argv[]) {
     cl_event  event;
 
     // create the two input vectors + output vector
-    char file = argv[1];
+    char *file = argv[1];
     int i, j;
     int h = atoi(argv[2]), w = atoi(argv[3]), s = atoi(argv[4]); // height, weight, filter
     int x = h - s - 1, y = w - s - 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
-    pgm_load(*A, h*, w*, file*);
+    pgm_load(A, &h, &w, file);
 
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
