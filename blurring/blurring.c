@@ -13,14 +13,15 @@ int main(int argc, char* argv[]) {
     cl_event  event;
 
     // create the two input vectors + output vector
-    char *file = argv[1];
+    char *file_in = argv[1]; 
+    char file_out[8] = "out.pgm"; 
     int i, j;
     int h = atoi(argv[2]), w = atoi(argv[3]), s = atoi(argv[4]); // height, weight, filter
     int x = h - s - 1, y = w - s - 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
-    pgm_load((unsigned char **) &A, &h, &w, file);
+    pgm_load((unsigned char **) &A, &h, &w, file_in);
 
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]) {
     printf("Tempo esecuzione su GPU: %f sec\n", 
            clut_get_duration(event));
 
-    pgm_save((unsigned char *)C, x, y, file);
+    pgm_save((unsigned char *)C, x, y, file_out);
 
     clut_close_device(&dev);
 
