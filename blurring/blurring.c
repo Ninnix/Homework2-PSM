@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     char file_out[8] = "out.pgm"; 
     int i, j;
     int h = atoi(argv[2]), w = atoi(argv[3]), s = atoi(argv[4]); // height, weight, filter
-    int x = h - s - 1, y = w - s - 1, count = 0;
+    int x = h - s/2 - 1, y = w - s/2 - 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
