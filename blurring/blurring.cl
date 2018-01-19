@@ -22,5 +22,5 @@ __kernel void blurring_img(__global const int *A,
             c++;
             }
         }
-    C[ki*s+kj] = sum/count;
+    C[ki*(h-s + 1)+kj] = sum/count;
 }

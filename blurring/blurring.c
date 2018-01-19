@@ -17,11 +17,19 @@ int main(int argc, char* argv[]) {
     char file_out[8] = "out.pgm"; 
     int i, j;
     int h = atoi(argv[2]), w = atoi(argv[3]), s = atoi(argv[4]); // height, weight, filter
-    int x = h - s/2 - 1, y = w - s/2 - 1, count = 0;
+    int x = h - s + 1, y = w - s + 1, count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
-    pgm_load((unsigned char **) &A, &h, &w, file_in);
+    unsigned char *D = (unsigned char*)malloc(sizeof(unsigned char)*h*w);
+    unsigned char E[x*y];
+    pgm_load(&D, &h, &w, file_in);
+
+    for (i = 0; i < h; i++) {
+        for (j = 0; j < w; j++) {
+            A[i*h+j] = (int) D[i*h+j];
+        }
+    }
 
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
@@ -80,10 +88,10 @@ int main(int argc, char* argv[]) {
     // execute the OpenCL kernel on the list
     size_t local_item_size[2]  = { LOCAL_SIZE, LOCAL_SIZE };
     size_t global_item_size[2] = 
-        { ((s+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE,
-          ((s+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE } ;
+        { ((w+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE,
+          ((h+LOCAL_SIZE-1)/LOCAL_SIZE)*LOCAL_SIZE } ;
 
-    printf("data size: %d\n", s);
+    printf("data size: %d\n", h);
     printf("global size: %lu\n", global_item_size[0]);
     
     err = clEnqueueNDRangeKernel(dev.queue, kernel, 2, NULL, 
@@ -93,18 +101,26 @@ int main(int argc, char* argv[]) {
 
     // read the memory buffer C on the device to the local variable C
     err = clEnqueueReadBuffer(dev.queue, c_mem_obj, CL_TRUE, 0, 
-                              x*y * sizeof(int), C, 0, NULL, NULL);
+                             x*y * sizeof(int), C, 0, NULL, NULL);
     clut_check_err(err, "clEnqueueReadBuffer failed");
 
     printf("Tempo esecuzione su GPU: %f sec\n", 
            clut_get_duration(event));
 
-    pgm_save((unsigned char *)C, x, y, file_out);
+    for (i = 0; i < x; i++) {
+        for (j = 0; j < y; j++) {
+            E[i*x+j] = (unsigned char) C[i*x+j];
+        }
+    }
+
+    pgm_save(E, x, y, file_out);
 
     clut_close_device(&dev);
 
     free(A);
     free(B);
     free(C);
+    free(D);
+    
     return 0;
 }
