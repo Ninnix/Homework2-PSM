@@ -17,20 +17,21 @@ int main(int argc, char* argv[]) {
     char file_out[8] = "out.pgm"; 
     int i, j;
     int h = atoi(argv[2]), w = atoi(argv[3]), s = atoi(argv[4]); // height, weight, filter
-    int x = h - s + 1, y = w - s + 1, count = 0;
+    int x = h - s + 1 , y = w - s + 1 , count = 0;
     int *A = (int*)malloc(sizeof(int)*h*w);
     int *B = (int*)malloc(sizeof(int)*s*s);
     int *C = (int*)malloc(sizeof(int)*x*y);
     unsigned char *D = (unsigned char*)malloc(sizeof(unsigned char)*h*w);
-    unsigned char E[x*y];
-    pgm_load(&D, &h, &w, file_in);
+    unsigned char *E = (unsigned char*)malloc(sizeof(unsigned char)*x*y);
+    //unsigned char E[x*y];
+    pgm_load(&D, &w, &h, file_in);
 
-    for (i = 0; i < h; i++) {
-        for (j = 0; j < w; j++) {
+    for (i = 0; i < w; i++) {
+        for (j = 0; j < h; j++) {
             A[i*h+j] = (int) D[i*h+j];
         }
     }
-
+    
     int z = s/2; // indice da cui iniziare a scrivere 1 in ogni riga
     for (i = 0; i < s; i++) {
         for (j = 0; j < s; j++) {
@@ -85,6 +86,7 @@ int main(int argc, char* argv[]) {
     err |= clSetKernelArg(kernel, 6, sizeof(int), (void *)&count);
     clut_check_err(err, "clSetKernelArg failed");
 
+
     // execute the OpenCL kernel on the list
     size_t local_item_size[2]  = { LOCAL_SIZE, LOCAL_SIZE };
     size_t global_item_size[2] = 
@@ -101,19 +103,20 @@ int main(int argc, char* argv[]) {
 
     // read the memory buffer C on the device to the local variable C
     err = clEnqueueReadBuffer(dev.queue, c_mem_obj, CL_TRUE, 0, 
-                             x*y * sizeof(int), C, 0, NULL, NULL);
+                              x*y * sizeof(int), C, 0, NULL, NULL);
     clut_check_err(err, "clEnqueueReadBuffer failed");
 
     printf("Tempo esecuzione su GPU: %f sec\n", 
            clut_get_duration(event));
 
-    for (i = 0; i < x; i++) {
-        for (j = 0; j < y; j++) {
+    for (i = 0; i < y; i++) {
+        for (j = 0; j < x; j++) {
             E[i*x+j] = (unsigned char) C[i*x+j];
         }
     }
+    
 
-    pgm_save(E, x, y, file_out);
+    pgm_save(E, y, x, file_out);
 
     clut_close_device(&dev);
 
@@ -121,6 +124,7 @@ int main(int argc, char* argv[]) {
     free(B);
     free(C);
     free(D);
+    free(E);
     
     return 0;
 }
