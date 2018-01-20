@@ -17,8 +17,7 @@ __kernel void blurring_img(__global const int *A,
     int kj = j-s/2;
     for (int x=ki; x < ki + s; x++) {
         for (int y=kj; y < kj + s; y++) {
-            int somma = A[x*h+y] * B[c];
-            sum = sum + somma;
+            sum += A[x*h+y] * B[c];
             c++;
             }
         }
