@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "clut.h"
 #include "pgm.h"
 
@@ -115,7 +114,7 @@ int main(int argc, char* argv[]) {
                clut_get_duration(event));
     } else {
     	
-    	clock_t begin = clock();
+    	double start = clut_get_real_time();
     	
         for (i = 0; i < w; i++) {
             for (j = 0; j < h; j++) {
@@ -136,12 +135,9 @@ int main(int argc, char* argv[]) {
                 C[ki * (h - s + 1) + kj] = sum / count;
             }
         }
-        
-        clock_t end = clock();
-    	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    	
-    	printf("Tempo esecuzione su CPU: %f sec\n",
-               time_spent);
+
+        double stop = clut_get_real_time();
+        printf("Tempo esecuzione su CPU: %f sec\n", stop-start);
     }
 
     for (i = 0; i < y; i++) {
